@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+itsdangerous
+bcrypt
+jinja2
+playwright
+websockets
+gspread
+tzdata
+httpx

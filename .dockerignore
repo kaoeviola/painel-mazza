@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.git/
+.venv/
+venv/
+logs/
+perfis/
+sessao_painel/
+sessao_whatsapp/
+credenciais/

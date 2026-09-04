@@ -1,0 +1,20 @@
+{
+  "prospectar": {
+    "status_marcar": ["Prospectar"],
+    "status_destino": "Lixo",
+    "produto_destino": "Nenhum",
+    "status_motivo": null,
+    "historico_msg": "Em contato com o cliente",
+    "preencher_data": true,
+    "retorno_dias": 0
+  },
+  "retrabalho": {
+    "status_marcar": ["Retrabalhar"],
+    "status_destino": "Lixo",
+    "produto_destino": "Nenhum",
+    "status_motivo": null,
+    "historico_msg": "Em contato com o cliente",
+    "preencher_data": true,
+    "retorno_dias": 0
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "atendentes": [
+    {
+      "id": "atendente1",
+      "nome": "Atendente 1",
+      "senha_hash": "GERE_COM_scripts/gerar_senha.py",
+      "planilha_id": "ID_DA_PLANILHA_GOOGLE_SHEETS",
+      "painel_hash": "",
+      "display": ":101",
+      "vnc_port": 6901,
+      "display_painel": ":101",
+      "vnc_port_painel": 6901,
+      "display_whatsapp": ":111",
+      "vnc_port_whatsapp": 6911,
+      "vnc_senha": "defina-uma-senha-forte",
+      "notificar_whatsapp": null,
+      "ativo": true
+    }
+  ]
+}

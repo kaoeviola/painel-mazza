@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel de Prospecção | Mazza Broker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css?v=2">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-title">
+      <span class="brand-mark">MB</span>
+      <div>
+        <p class="eyebrow">Mazza Broker</p>
+        <h1>Painel de Prospecção</h1>
+      </div>
+    </div>
+    <div class="user-area">
+      <span class="user-pill">{{ atendente.nome }}</span>
+      <form method="post" action="/logout">
+        <button class="secondary-button" type="submit">Sair</button>
+      </form>
+    </div>
+  </header>
+
+  <main class="dashboard">
+    <section class="panel-card status-card">
+      <div class="card-heading row-heading">
+        <h2>Status das conexões</h2>
+        <div class="heading-actions">
+          <span id="executionBadge" class="status-badge">IDLE</span>
+          <button id="checkConnectionsButton" class="ghost-button" type="button" title="Verificar conexões">↻ Verificar</button>
+        </div>
+      </div>
+      <div class="status-grid">
+        <div id="statusPainel" class="status-item" data-status="nao_configurado">
+          <span class="status-icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9A2.5 2.5 0 0 1 17.5 17H14v2h3a1 1 0 1 1 0 2H7a1 1 0 1 1 0-2h3v-2H6.5A2.5 2.5 0 0 1 4 14.5v-9Zm2 0v9c0 .28.22.5.5.5h11a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5Z"/></svg>
+          </span>
+          <span class="status-dot" aria-hidden="true"></span>
+          <div>
+            <strong>Painel do Corretor</strong>
+            <p>Não configurado</p>
+            <button class="connect-button" type="button" data-service="painel">Conectar</button>
+          </div>
+        </div>
+        <div id="statusWhatsapp" class="status-item" data-status="nao_configurado">
+          <span class="status-icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24"><path d="M12 3a8.73 8.73 0 0 0-7.45 13.3L3.7 20.1a1 1 0 0 0 1.2 1.2l3.8-.85A8.73 8.73 0 1 0 12 3Zm0 2a6.73 6.73 0 0 1 0 13.46 6.65 6.65 0 0 1-2.8-.62 1 1 0 0 0-.62-.07l-2.55.57.57-2.55a1 1 0 0 0-.07-.62A6.73 6.73 0 0 1 12 5Zm-2.15 3.3c.17-.01.35-.01.53-.01.13 0 .3.05.45.38.17.39.57 1.36.62 1.46.05.1.08.23.02.37-.18.4-.38.66-.58.9-.1.12-.21.24-.09.45.36.63.78 1.17 1.35 1.65.64.54 1.17.72 1.38.82.2.1.33.08.46-.05.14-.15.53-.62.68-.84.14-.2.28-.17.47-.1.2.08 1.26.6 1.48.7.21.1.35.15.4.24.05.1.05.57-.14 1.12-.2.54-1.12 1.03-1.56 1.07-.4.04-.9.06-1.45-.09-.34-.1-.77-.25-1.32-.49-2.33-1-3.85-3.33-3.96-3.49-.12-.16-.95-1.26-.95-2.4 0-1.15.6-1.7.82-1.94.2-.23.46-.29.61-.3Z"/></svg>
+          </span>
+          <span class="status-dot" aria-hidden="true"></span>
+          <div>
+            <strong>WhatsApp</strong>
+            <p>Não configurado</p>
+            <button class="connect-button" type="button" data-service="whatsapp">Conectar</button>
+          </div>
+        </div>
+        <div id="statusPlanilha" class="status-item" data-status="nao_configurado">
+          <span class="status-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M7 3h7.6c.27 0 .52.1.7.3l3.4 3.4c.2.18.3.43.3.7V19a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm7 2v3h3l-3-3ZM8 11a1 1 0 0 0 0 2h8a1 1 0 1 0 0-2H8Zm0 4a1 1 0 1 0 0 2h5a1 1 0 1 0 0-2H8Z"/></svg>
+          </span>
+          <span class="status-dot" aria-hidden="true"></span>
+          <div>
+            <strong>Planilha Google</strong>
+            <p>Não configurado</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel-card">
+      <div class="card-heading">
+        <h2>Nova extração</h2>
+      </div>
+      <form id="extractForm" class="extract-form">
+        <fieldset class="radio-row">
+          <legend>Tipo</legend>
+          <label>
+            <input type="radio" name="tipo" value="prospectar" checked>
+            <span>Prospectar</span>
+          </label>
+          <label>
+            <input type="radio" name="tipo" value="retrabalho">
+            <span>Retrabalho</span>
+          </label>
+        </fieldset>
+
+        <label class="number-field" for="quantidade">
+          Quantidade de leads
+          <input id="quantidade" name="quantidade" type="number" min="1" max="500" value="100">
+        </label>
+
+        <div class="action-row">
+          <button id="runButton" type="submit" disabled title="Verificando conexões...">Iniciar</button>
+          <button id="cancelButton" class="secondary-button hidden" type="button">Cancelar</button>
+        </div>
+      </form>
+
+      <div class="daily-cap-section">
+        <div class="card-heading">
+          <h2>Limite diário de disparo</h2>
+        </div>
+        <form id="dailyCapForm" class="daily-cap-form">
+          <label class="number-field" for="dailyCap">
+            Disparos por dia
+            <input id="dailyCap" name="daily_cap" type="number" min="1" max="500" step="1" disabled>
+          </label>
+          <button id="saveDailyCapButton" type="submit" disabled>Salvar</button>
+          <p id="dailyCapFeedback" class="config-feedback" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="panel-card live-card">
+      <div class="card-heading live-heading">
+        <h2>Painel do Corretor — ao vivo</h2>
+        <button class="expand-live-button" type="button" data-frame="vnc-painel" title="Expandir tela">⛶</button>
+      </div>
+      <div id="vnc-painel" class="live-frame" aria-label="Painel do Corretor ao vivo">
+        <div class="live-placeholder">
+          <span class="live-icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9A2.5 2.5 0 0 1 17.5 17H14v2h3a1 1 0 1 1 0 2H7a1 1 0 1 1 0-2h3v-2H6.5A2.5 2.5 0 0 1 4 14.5v-9Zm2 0v9c0 .28.22.5.5.5h11a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0-.5.5Z"/></svg>
+          </span>
+          <p>Tela ao vivo disponível após conexão</p>
+          <button class="connect-button live-connect-button" type="button" data-service="painel">Conectar</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel-card live-card">
+      <div class="card-heading live-heading">
+        <h2>WhatsApp Web — ao vivo</h2>
+        <button class="expand-live-button" type="button" data-frame="vnc-whatsapp" title="Expandir tela">⛶</button>
+      </div>
+      <div id="vnc-whatsapp" class="live-frame" aria-label="WhatsApp Web ao vivo">
+        <div class="live-placeholder">
+          <span class="live-icon" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24"><path d="M12 3a8.73 8.73 0 0 0-7.45 13.3L3.7 20.1a1 1 0 0 0 1.2 1.2l3.8-.85A8.73 8.73 0 1 0 12 3Zm0 2a6.73 6.73 0 0 1 0 13.46 6.65 6.65 0 0 1-2.8-.62 1 1 0 0 0-.62-.07l-2.55.57.57-2.55a1 1 0 0 0-.07-.62A6.73 6.73 0 0 1 12 5Zm-2.15 3.3c.17-.01.35-.01.53-.01.13 0 .3.05.45.38.17.39.57 1.36.62 1.46.05.1.08.23.02.37-.18.4-.38.66-.58.9-.1.12-.21.24-.09.45.36.63.78 1.17 1.35 1.65.64.54 1.17.72 1.38.82.2.1.33.08.46-.05.14-.15.53-.62.68-.84.14-.2.28-.17.47-.1.2.08 1.26.6 1.48.7.21.1.35.15.4.24.05.1.05.57-.14 1.12-.2.54-1.12 1.03-1.56 1.07-.4.04-.9.06-1.45-.09-.34-.1-.77-.25-1.32-.49-2.33-1-3.85-3.33-3.96-3.49-.12-.16-.95-1.26-.95-2.4 0-1.15.6-1.7.82-1.94.2-.23.46-.29.61-.3Z"/></svg>
+          </span>
+          <p>Tela ao vivo disponível após conexão</p>
+          <button class="connect-button live-connect-button" type="button" data-service="whatsapp">Conectar</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel-card logs-card">
+      <div class="card-heading logs-heading">
+        <h2>Logs</h2>
+        <div class="counter-row" aria-label="Contadores da execução">
+          <span class="counter-info">Extraídos <strong id="countExtraidos">0</strong></span>
+          <span class="counter-success">Válidos <strong id="countValidos">0</strong></span>
+          <span class="counter-danger">Inválidos <strong id="countInvalidos">0</strong></span>
+          <span>Colados <strong id="countColados">0</strong></span>
+        </div>
+      </div>
+      <div class="progress-track" aria-hidden="true">
+        <span id="extractionProgress"></span>
+      </div>
+      <pre id="logBox" class="terminal">Aguardando execução...</pre>
+    </section>
+
+    <section class="panel-card history-card">
+      <div class="card-heading logs-heading">
+        <h2>Hist?rico</h2>
+        <button id="refreshHistoryButton" class="ghost-button" type="button">? Atualizar</button>
+      </div>
+      <div class="history-table-wrap">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Data/Hora</th>
+              <th>Modo</th>
+              <th>Pedidos</th>
+              <th>Colados</th>
+              <th>Erros</th>
+              <th>Dura??o</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody">
+            <tr><td colspan="7">Carregando hist?rico...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div id="liveOverlay" class="live-overlay hidden" aria-hidden="true">
+    <div class="live-overlay-bar">
+      <strong id="liveOverlayTitle">Tela ao vivo</strong>
+      <button id="closeLiveOverlay" class="secondary-button" type="button">Fechar</button>
+    </div>
+    <div id="liveOverlayStage" class="live-overlay-stage"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById("extractForm");
+    const atendenteId = "{{ atendente.id }}";
+    const podeEditarDailyCap = atendenteId === "kaoe";
+    const dailyCapForm = document.getElementById("dailyCapForm");
+    const dailyCapInput = document.getElementById("dailyCap");
+    const saveDailyCapButton = document.getElementById("saveDailyCapButton");
+    const dailyCapFeedback = document.getElementById("dailyCapFeedback");
+    const runButton = document.getElementById("runButton");
+    const cancelButton = document.getElementById("cancelButton");
+    const checkConnectionsButton = document.getElementById("checkConnectionsButton");
+    const refreshHistoryButton = document.getElementById("refreshHistoryButton");
+    const historyBody = document.getElementById("historyBody");
+    const badge = document.getElementById("executionBadge");
+    const logBox = document.getElementById("logBox");
+    const progressBar = document.getElementById("extractionProgress");
+    const connectionItems = {
+      painel_corretor: document.getElementById("statusPainel"),
+      whatsapp: document.getElementById("statusWhatsapp"),
+      planilha: document.getElementById("statusPlanilha"),
+    };
+    const serviceConnectionItems = {
+      painel: document.getElementById("statusPainel"),
+      whatsapp: document.getElementById("statusWhatsapp"),
+    };
+    const counters = {
+      extraidos: document.getElementById("countExtraidos"),
+      validos: document.getElementById("countValidos"),
+      invalidos: document.getElementById("countInvalidos"),
+      colados: document.getElementById("countColados"),
+    };
+
+    let running = false;
+    let waitingConfirmation = false;
+    let firstLog = true;
+    let connectionState = null;
+    let checkingConnections = true;
+    const liveFrames = [
+      document.getElementById("vnc-painel"),
+      document.getElementById("vnc-whatsapp"),
+    ];
+    const liveOverlay = document.getElementById("liveOverlay");
+    const liveOverlayStage = document.getElementById("liveOverlayStage");
+    const liveOverlayTitle = document.getElementById("liveOverlayTitle");
+    const closeLiveOverlay = document.getElementById("closeLiveOverlay");
+    const livePlaceholders = new Map(liveFrames.map((frame) => [frame.id, frame.innerHTML]));
+    const iframeRetries = new Map();
+    let expandedFrame = null;
+    let expandedIframe = null;
+    let setupState = {ativo: false, servico: null};
+
+    function showDailyCapFeedback(message, type = "") {
+      dailyCapFeedback.textContent = message;
+      dailyCapFeedback.className = `config-feedback${type ? ` config-feedback-${type}` : ""}`;
+      dailyCapFeedback.setAttribute("role", type === "error" ? "alert" : "status");
+    }
+
+    async function loadDailyCap() {
+      showDailyCapFeedback("Carregando limite...");
+      try {
+        const response = await fetch("/api/config/daily-cap");
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Não foi possível carregar o limite.");
+        dailyCapInput.value = data.daily_cap;
+        dailyCapInput.disabled = !podeEditarDailyCap;
+        saveDailyCapButton.disabled = !podeEditarDailyCap;
+        showDailyCapFeedback(
+          podeEditarDailyCap ? "" : "Somente o atendente kaoe pode alterar este valor."
+        );
+      } catch (error) {
+        dailyCapInput.disabled = true;
+        saveDailyCapButton.disabled = true;
+        showDailyCapFeedback(error.message, "error");
+      }
+    }
+
+    async function saveDailyCap(event) {
+      event.preventDefault();
+      if (!podeEditarDailyCap) return;
+
+      saveDailyCapButton.disabled = true;
+      showDailyCapFeedback("Salvando...");
+      try {
+        const response = await fetch("/api/config/daily-cap", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({daily_cap: Number(dailyCapInput.value)}),
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || "Não foi possível salvar o limite.");
+        dailyCapInput.value = data.daily_cap;
+        showDailyCapFeedback("Limite diário salvo com sucesso.", "success");
+      } catch (error) {
+        showDailyCapFeedback(error.message, "error");
+      } finally {
+        saveDailyCapButton.disabled = false;
+      }
+    }
+
+    function setBadge(estado, fila) {
+      let label = estado || "IDLE";
+      if (fila && fila > 0 && estado !== "RODANDO") {
+        label = "NA FILA";
+      }
+      if (estado === "AGUARDANDO_CONFIRMACAO") {
+        label = "Aguardando sua confirmação";
+      }
+      badge.textContent = label;
+      badge.dataset.state = label;
+    }
+
+    function setRunning(value, waiting = false) {
+      running = value;
+      waitingConfirmation = waiting;
+      if (waiting) {
+        runButton.textContent = "▶ Continuar extração";
+      } else {
+        runButton.textContent = value ? "Parar" : "Iniciar";
+      }
+      runButton.classList.toggle("danger-button", value && !waiting);
+      runButton.classList.toggle("continue-button", waiting);
+      cancelButton.classList.toggle("hidden", !waiting);
+      updateStartButtonState();
+    }
+
+    function connectionMessage(name, data) {
+      if (!data || data.status === "nao_configurado") return "Não configurado";
+      if (data.status === "conectado" && name === "planilha" && data.titulo) return `Conectado — ${data.titulo}`;
+      if (data.status === "conectado") return "Conectado";
+      if (data.status === "erro_permissao") {
+        if (data.client_email) return `Sem permissão; compartilhe com ${data.client_email}`;
+        return "Sem permissão na planilha";
+      }
+      if (data.status === "nao_encontrada") {
+        if (data.client_email) return `Planilha não encontrada; confira o ID e compartilhe com ${data.client_email}`;
+        return "Planilha não encontrada";
+      }
+      if (data.status === "credenciais_nao_configuradas") return "Credenciais da service account não configuradas";
+      if (data.status === "erro_api") return "Erro ao consultar a API do Google Sheets";
+      return "Não configurado";
+    }
+
+    function renderConnection(name, data) {
+      const item = connectionItems[name];
+      if (!item) return;
+      const status = data?.status || "nao_configurado";
+      item.dataset.status = status;
+      item.querySelector("p").textContent = connectionMessage(name, data);
+      renderSetupButtons();
+    }
+
+    function serviceFromStatusName(name) {
+      if (name === "painel_corretor") return "painel";
+      if (name === "whatsapp") return "whatsapp";
+      return null;
+    }
+
+    function renderSetupButtons() {
+      document.querySelectorAll(".connect-button[data-service]").forEach((button) => {
+        const service = button.dataset.service;
+        const activeForService = setupState.ativo && setupState.servico === service;
+        const activeOther = setupState.ativo && setupState.servico !== service;
+        button.dataset.mode = activeForService ? "finish" : "connect";
+        button.textContent = activeForService ? "Concluir conexão" : "Conectar";
+        button.disabled = activeOther || running || waitingConfirmation;
+        button.title = activeForService
+          ? "Fechar navegador de setup e revalidar conexão"
+          : "Abrir navegador para login manual";
+      });
+
+      Object.entries(serviceConnectionItems).forEach(([service, item]) => {
+        if (!item) return;
+        if (setupState.ativo && setupState.servico === service) {
+          item.dataset.status = "conectando";
+          item.querySelector("p").textContent = "Conectando — faça login na tela ao vivo e clique em Concluir conexão";
+        }
+      });
+    }
+
+    function missingRequirements() {
+      if (checkingConnections) return ["verificação de conexões em andamento"];
+      const missing = [];
+      if (connectionState?.painel_corretor?.status !== "conectado") missing.push("Painel do Corretor");
+      if (connectionState?.planilha?.status !== "conectado") missing.push("Planilha Google");
+      return missing;
+    }
+
+    function updateStartButtonState() {
+      if (waitingConfirmation) {
+        runButton.disabled = false;
+        runButton.title = "Continuar após confirmar login no Painel e WhatsApp Web";
+        return;
+      }
+      if (running) {
+        runButton.disabled = false;
+        runButton.title = "Interromper execução atual";
+        return;
+      }
+      const missing = missingRequirements();
+      runButton.disabled = missing.length > 0;
+      runButton.title = missing.length ? `Configure antes de iniciar: ${missing.join(", ")}` : "Iniciar extração";
+    }
+
+    async function refreshConnections() {
+      checkingConnections = true;
+      checkConnectionsButton.disabled = true;
+      updateStartButtonState();
+      try {
+        const response = await fetch("/api/status/conexoes");
+        if (!response.ok) return;
+        connectionState = await response.json();
+        Object.entries(connectionState).forEach(([name, data]) => renderConnection(name, data));
+      } finally {
+        checkingConnections = false;
+        checkConnectionsButton.disabled = false;
+        updateStartButtonState();
+      }
+    }
+
+    function logClass(linha) {
+      const texto = (linha || "").toLowerCase();
+      if (texto.includes("erro") || texto.includes("falha") || texto.includes("não encontrada") || texto.includes("nao encontrada")) return "log-error";
+      if (texto.includes("conectado") || texto.includes("colado") || texto.includes("registrados") || texto.includes("sucesso")) return "log-success";
+      if (texto.includes("aguard") || texto.includes("aviso") || texto.includes("fila")) return "log-warning";
+      return "log-line";
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;",
+      }[char]));
+    }
+
+    function appendLog(hora, linha) {
+      if (firstLog) {
+        logBox.textContent = "";
+        firstLog = false;
+      }
+      const line = document.createElement("span");
+      line.className = logClass(linha);
+      line.innerHTML = `<span class="log-time">[${hora}]</span> ${escapeHtml(linha)}\n`;
+      logBox.appendChild(line);
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function updateProgress() {
+      const total = Math.max(1, Number(document.getElementById("quantidade").value) || 1);
+      const current = Number(counters.extraidos.textContent) || 0;
+      progressBar.style.width = `${Math.min(100, Math.round((current / total) * 100))}%`;
+    }
+
+    function updateCounter(campo, valor) {
+      if (counters[campo]) {
+        counters[campo].textContent = valor;
+      }
+      updateProgress();
+    }
+
+    function formatDateTime(value) {
+      if (!value) return "-";
+      return new Date(value).toLocaleString("pt-BR", {dateStyle: "short", timeStyle: "short"});
+    }
+
+    function formatDuration(seg) {
+      const total = Number(seg) || 0;
+      const min = Math.floor(total / 60);
+      const sec = total % 60;
+      return min ? `${min}m ${sec}s` : `${sec}s`;
+    }
+
+    function statusLabel(status) {
+      return {
+        concluido: "Concluído",
+        concluido_com_avisos: "Com avisos",
+        erro: "Erro",
+        cancelado: "Cancelado",
+      }[status] || status || "-";
+    }
+
+    async function refreshHistory() {
+      try {
+        const response = await fetch("/api/execucoes?limit=50");
+        if (!response.ok) return;
+        const data = await response.json();
+        renderHistory(data.execucoes || []);
+      } catch (error) {
+        historyBody.innerHTML = `<tr><td colspan="7">Não foi possível carregar o histórico.</td></tr>`;
+      }
+    }
+
+    function renderHistory(items) {
+      if (!items.length) {
+        historyBody.innerHTML = `<tr><td colspan="7">Nenhuma execução registrada ainda.</td></tr>`;
+        return;
+      }
+      historyBody.innerHTML = "";
+      items.forEach((item) => {
+        const countersData = item.contadores || {};
+        const tr = document.createElement("tr");
+        tr.className = "history-row";
+        tr.innerHTML = `
+          <td>${formatDateTime(item.inicio)}</td>
+          <td>${escapeHtml(item.modo || "-")}</td>
+          <td>${item.quantidade_pedida ?? "-"}</td>
+          <td>${countersData.colados ?? 0}</td>
+          <td>${countersData.erro_fechamento ?? 0}</td>
+          <td>${formatDuration(item.duracao_seg)}</td>
+          <td><span class="history-status history-${item.status_final}">${statusLabel(item.status_final)}</span></td>
+        `;
+        const details = document.createElement("tr");
+        details.className = "history-details hidden";
+        details.innerHTML = `<td colspan="7">${historyDetailsHtml(item)}</td>`;
+        tr.addEventListener("click", () => details.classList.toggle("hidden"));
+        historyBody.appendChild(tr);
+        historyBody.appendChild(details);
+      });
+    }
+
+    function historyDetailsHtml(item) {
+      const countersData = item.contadores || {};
+      const leads = item.leads_com_erro || [];
+      const countersHtml = Object.entries(countersData)
+        .map(([key, value]) => `<span>${escapeHtml(key)} <strong>${value}</strong></span>`)
+        .join("");
+      const leadsHtml = leads.length
+        ? `<ul>${leads.map((lead) => `<li>${escapeHtml(lead.nome || "-")} — passo ${escapeHtml(lead.passo || "-")}</li>`).join("")}</ul>`
+        : `<p>Sem leads com erro parcial.</p>`;
+      return `<div class="history-detail-box"><div class="history-counters">${countersHtml}</div>${leadsHtml}${item.erro_msg ? `<pre>${escapeHtml(item.erro_msg)}</pre>` : ""}</div>`;
+    }
+
+    function applyStatus(execucao) {
+      setBadge(execucao.estado, execucao.minha_posicao_fila);
+      setRunning(execucao.rodando, execucao.aguardando_confirmacao);
+      if (execucao.contadores) {
+        Object.entries(execucao.contadores).forEach(([campo, valor]) => updateCounter(campo, valor));
+      }
+    }
+
+    async function refreshStatus() {
+      const response = await fetch("/api/status");
+      if (!response.ok) return;
+      const data = await response.json();
+      applyStatus(data.execucao);
+    }
+
+    async function refreshVncStatus() {
+      const response = await fetch("/api/vnc/status");
+      if (!response.ok) return;
+      const data = await response.json();
+      setupState = data.setup || {ativo: false, servico: null};
+      if (data.servicos) {
+        liveFrames.forEach((frame) => {
+          const frameService = frame.id === "vnc-painel" ? "painel" : "whatsapp";
+          const serviceStatus = data.servicos[frameService] || {};
+          if (!serviceStatus.janela_ativa || !serviceStatus.url) {
+            if (!frame.querySelector(".live-placeholder")) {
+              if (expandedFrame?.id === frame.id) closeExpandedLiveFrame();
+              frame.innerHTML = livePlaceholders.get(frame.id);
+              iframeRetries.delete(frame.id);
+            }
+            return;
+          }
+          const iframe = frame.querySelector("iframe");
+          if (expandedFrame?.id === frame.id && expandedIframe?.getAttribute("src") === serviceStatus.url) return;
+          if (iframe?.getAttribute("src") === serviceStatus.url) return;
+          mountLiveIframe(frame, serviceStatus.url);
+        });
+        renderSetupButtons();
+        return;
+      }
+      if (expandedFrame) {
+        closeExpandedLiveFrame();
+      }
+      liveFrames.forEach((frame) => {
+        if (!frame.querySelector(".live-placeholder")) {
+          frame.innerHTML = livePlaceholders.get(frame.id);
+          iframeRetries.delete(frame.id);
+        }
+      });
+      renderSetupButtons();
+    }
+
+    function mountLiveIframe(frame, url) {
+      frame.innerHTML = "";
+      iframeRetries.set(frame.id, 0);
+      const iframe = document.createElement("iframe");
+      iframe.title = frame.id === "vnc-painel" ? "Painel do Corretor ao vivo" : "WhatsApp Web ao vivo";
+      iframe.loading = "lazy";
+      iframe.src = url;
+      iframe.addEventListener("error", () => retryLiveIframe(frame, iframe, url));
+      frame.appendChild(iframe);
+      iframe.addEventListener("load", () => iframe.focus());
+    }
+
+    function retryLiveIframe(frame, iframe, url) {
+      const current = iframeRetries.get(frame.id) || 0;
+      if (current >= 3) {
+        frame.innerHTML = `<div class="live-placeholder"><p>Não foi possível carregar a tela ao vivo. Tente conectar novamente.</p></div>`;
+        return;
+      }
+      iframeRetries.set(frame.id, current + 1);
+      setTimeout(() => {
+        iframe.src = `${url}${url.includes("?") ? "&" : "?"}retry=${Date.now()}`;
+      }, 2000);
+    }
+
+    function expandLiveFrame(frameId) {
+      const frame = document.getElementById(frameId);
+      if (!frame) return;
+      const iframe = frame.querySelector("iframe");
+      if (!iframe) {
+        appendLog(new Date().toLocaleTimeString("pt-BR", {hour12: false}), "Tela ao vivo ainda não está ativa.");
+        return;
+      }
+      expandedFrame = frame;
+      expandedIframe = iframe;
+      liveOverlayTitle.textContent = frameId === "vnc-painel" ? "Painel do Corretor — ao vivo" : "WhatsApp Web — ao vivo";
+      liveOverlayStage.appendChild(iframe);
+      liveOverlay.classList.remove("hidden");
+      liveOverlay.setAttribute("aria-hidden", "false");
+      document.body.classList.add("overlay-open");
+      setTimeout(() => iframe.focus(), 150);
+    }
+
+    function closeExpandedLiveFrame() {
+      if (expandedFrame && expandedIframe) {
+        expandedFrame.appendChild(expandedIframe);
+        setTimeout(() => expandedIframe?.focus(), 150);
+      }
+      expandedFrame = null;
+      expandedIframe = null;
+      liveOverlay.classList.add("hidden");
+      liveOverlay.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("overlay-open");
+    }
+
+    function handleExpandButton(event) {
+      const button = event.target.closest(".expand-live-button[data-frame]");
+      if (!button) return;
+      expandLiveFrame(button.dataset.frame);
+    }
+
+    async function conectarServico(servico) {
+      const response = await fetch("/api/conexoes/conectar", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({servico}),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        appendLog(new Date().toLocaleTimeString("pt-BR", {hour12: false}), data.detail || "Falha ao abrir conexão.");
+        return;
+      }
+      setupState = data.vnc?.setup || {ativo: true, servico};
+      appendLog(new Date().toLocaleTimeString("pt-BR", {hour12: false}), `Conectando ${servico}. Faça login na tela ao vivo e clique em Concluir conexão.`);
+      await refreshVncStatus();
+      await refreshConnections();
+    }
+
+    async function finalizarServico(servico) {
+      const response = await fetch("/api/conexoes/finalizar", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({servico}),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        appendLog(new Date().toLocaleTimeString("pt-BR", {hour12: false}), data.detail || "Falha ao concluir conexão.");
+        return;
+      }
+      setupState = {ativo: false, servico: null};
+      if (data.conexoes) {
+        connectionState = data.conexoes;
+        Object.entries(connectionState).forEach(([name, item]) => renderConnection(name, item));
+      }
+      appendLog(new Date().toLocaleTimeString("pt-BR", {hour12: false}), `Conexão ${servico} concluída.`);
+      await refreshVncStatus();
+      await refreshConnections();
+    }
+
+    async function handleConnectionButton(event) {
+      const button = event.target.closest(".connect-button[data-service]");
+      if (!button) return;
+      const servico = button.dataset.service;
+      button.disabled = true;
+      try {
+        if (button.dataset.mode === "finish") {
+          await finalizarServico(servico);
+        } else {
+          await conectarServico(servico);
+        }
+      } finally {
+        renderSetupButtons();
+      }
+    }
+
+    async function startExtraction() {
+      const formData = new FormData(form);
+      const payload = {
+        tipo: formData.get("tipo"),
+        quantidade: Number(formData.get("quantidade")),
+      };
+      const response = await fetch("/api/extracao/iniciar", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        appendLog(new Date().toLocaleTimeString("pt-BR", {hour12: false}), data.detail || "Falha ao iniciar.");
+        return;
+      }
+      applyStatus(data.execucao);
+      if (data.status === "na_fila") {
+        appendLog(new Date().toLocaleTimeString("pt-BR", {hour12: false}), `Execução entrou na fila. Posição ${data.posicao}.`);
+      }
+    }
+
+    async function stopExtraction() {
+      const response = await fetch("/api/extracao/parar", {method: "POST"});
+      const data = await response.json();
+      if (!response.ok) {
+        appendLog(new Date().toLocaleTimeString("pt-BR", {hour12: false}), data.detail || "Falha ao parar.");
+        return;
+      }
+      applyStatus(data.execucao);
+    }
+
+    async function continueExtraction() {
+      const response = await fetch("/api/extracao/continuar", {method: "POST"});
+      const data = await response.json();
+      if (!response.ok) {
+        appendLog(new Date().toLocaleTimeString("pt-BR", {hour12: false}), data.detail || "Falha ao continuar.");
+        return;
+      }
+      applyStatus(data.execucao);
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!running && !waitingConfirmation && missingRequirements().length > 0) return;
+      runButton.disabled = true;
+      try {
+        if (waitingConfirmation) {
+          await continueExtraction();
+        } else if (running) {
+          await stopExtraction();
+        } else {
+          await startExtraction();
+        }
+      } finally {
+        updateStartButtonState();
+      }
+    });
+
+    dailyCapForm.addEventListener("submit", saveDailyCap);
+    checkConnectionsButton.addEventListener("click", refreshConnections);
+    refreshHistoryButton.addEventListener("click", refreshHistory);
+    cancelButton.addEventListener("click", stopExtraction);
+    document.addEventListener("click", handleConnectionButton);
+    document.addEventListener("click", handleExpandButton);
+    closeLiveOverlay.addEventListener("click", closeExpandedLiveFrame);
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !liveOverlay.classList.contains("hidden")) {
+        closeExpandedLiveFrame();
+      }
+    });
+    document.getElementById("quantidade").addEventListener("input", updateProgress);
+
+    function connectLogs() {
+      const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+      const socket = new WebSocket(`${protocol}://${window.location.host}/ws/logs`);
+
+      socket.addEventListener("message", (event) => {
+        const message = JSON.parse(event.data);
+        if (message.tipo === "log") {
+          appendLog(message.hora, message.linha);
+        }
+        if (message.tipo === "contador") {
+          updateCounter(message.campo, message.valor);
+        }
+        if (message.tipo === "estado") {
+          applyStatus(message);
+          refreshVncStatus();
+          if (["CONCLUIDO", "ERRO", "CANCELADO"].includes(message.estado)) {
+            refreshHistory();
+          }
+        }
+      });
+
+      socket.addEventListener("close", () => {
+        setTimeout(connectLogs, 2000);
+      });
+    }
+
+    refreshStatus();
+    loadDailyCap();
+    refreshConnections();
+    refreshHistory();
+    refreshVncStatus();
+    setInterval(refreshVncStatus, 5000);
+    updateProgress();
+    connectLogs();
+  </script>
+</body>
+</html>

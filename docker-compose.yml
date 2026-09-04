@@ -1,0 +1,17 @@
+services:
+  painel-mazza:
+    build: .
+    container_name: painel-mazza
+    environment:
+      MODO: vps
+      APP_PORT: 8080
+      APP_SECRET_KEY: troque-esta-chave-em-producao
+    ports:
+      - "8080:8080"
+      - "6901-6920:6901-6920"
+    volumes:
+      - ./config:/app/config
+      - ./perfis:/app/perfis
+      - ./logs:/app/logs
+      - ./credenciais:/app/credenciais
+    restart: unless-stopped

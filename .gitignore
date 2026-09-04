@@ -1,0 +1,8 @@
+credenciais/
+perfis/
+logs/
+__pycache__/
+sessao_*/
+
+# credenciais de atendentes (dados reais)
+config/atendentes.json
